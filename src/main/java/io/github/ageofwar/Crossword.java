@@ -312,7 +312,6 @@ public class Crossword {
             };
         }
     }
-    public record PositionDirection(Position position, Direction direction) {}
     public record PositionDirectionLength(Position position, Direction direction, int length) {}
     public record PositionLength(Position position, int length) {}
 }

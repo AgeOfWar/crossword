@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         var dictionary = Dictionary.fromFile("words.italian.txt");
         var crossword = Crossword.fromString("""
             #.##.##.#
@@ -21,7 +21,6 @@ public class Main {
         //System.out.println(crossword);
         //System.out.println(elapsed / 1000000000 + "s" + (elapsed % 1000000000) / 1000000 + "ms");
 
-        var start = System.nanoTime();
         var mainThread = Thread.currentThread();
         var threads = new Thread[12];
         var count = new AtomicInteger(0);

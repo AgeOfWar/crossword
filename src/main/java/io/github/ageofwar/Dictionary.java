@@ -10,31 +10,6 @@ public class Dictionary {
     private final Trie trie;
     private final List<Integer> wordCountByLength;
 
-    private static byte[] toBytes(String s) {
-        var bytes = new byte[s.length()];
-        for (int i = 0; i < s.length(); i++) {
-            var c = Character.toUpperCase(s.charAt(i));
-            if (c == '.') {
-                bytes[i] = Trie.WILDCARD;
-            } else {
-                bytes[i] = (byte) (c - 'A');
-            }
-        }
-        return bytes;
-    }
-
-    private static String toString(byte[] bytes) {
-        var s = new StringBuilder();
-        for (byte b : bytes) {
-            if (b == Trie.WILDCARD) {
-                s.append('.');
-            } else {
-                s.append((char) (b + 'A'));
-            }
-        }
-        return s.toString();
-    }
-
     public static Dictionary fromFile(String path) throws IOException {
         var dictionary = new Dictionary();
         try (var lines = Files.lines(Path.of(path))) {
@@ -54,7 +29,7 @@ public class Dictionary {
 
     public void insert(String word) {
         if (!word.matches("[A-Za-z]*")) throw new IllegalArgumentException("Invalid word: " + word);
-        if (trie.insert(toBytes(word))) {
+        if (trie.insert(Pattern.fromString(word))) {
             for (int i = wordCountByLength.size(); i <= word.length(); i++) {
                 wordCountByLength.add(0);
             }
