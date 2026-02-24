@@ -8,9 +8,9 @@ class ScoreHeapTest {
     @Test
     void testAddAndPoll() {
         var heap = new ScoreHeap<String>();
-        heap.add("A", 3);
-        heap.add("B", 1);
-        heap.add("C", 2);
+        heap.set("A", 3);
+        heap.set("B", 1);
+        heap.set("C", 2);
 
         assertEquals("B", heap.poll().value());
         assertEquals("C", heap.poll().value());
@@ -22,7 +22,7 @@ class ScoreHeapTest {
     void testIsEmpty() {
         var heap = new ScoreHeap<Integer>();
         assertTrue(heap.isEmpty());
-        heap.add(5, 1);
+        heap.set(5, 1);
         assertFalse(heap.isEmpty());
         heap.poll();
         assertTrue(heap.isEmpty());
@@ -32,8 +32,8 @@ class ScoreHeapTest {
     void testSize() {
         var heap = new ScoreHeap<String>();
         assertEquals(0, heap.size());
-        heap.add("X", 5);
-        heap.add("Y", 3);
+        heap.set("X", 5);
+        heap.set("Y", 3);
         assertEquals(2, heap.size());
         heap.poll();
         assertEquals(1, heap.size());
@@ -42,8 +42,8 @@ class ScoreHeapTest {
     @Test
     void testCopy() {
         var heap = new ScoreHeap<String>();
-        heap.add("A", 3);
-        heap.add("B", 1);
+        heap.set("A", 3);
+        heap.set("B", 1);
 
         var clone = heap.copy();
 
@@ -57,9 +57,9 @@ class ScoreHeapTest {
     @Test
     void testAddBeyondCapacity() {
         var heap = new ScoreHeap<Integer>(2);
-        heap.add(1, 10);
-        heap.add(2, 5);
-        heap.add(3, 1);
+        heap.set(1, 10);
+        heap.set(2, 5);
+        heap.set(3, 1);
 
         assertEquals(3, heap.poll().value());
         assertEquals(2, heap.poll().value());
@@ -69,11 +69,11 @@ class ScoreHeapTest {
     @Test
     void testComplexOperations() {
         var heap = new ScoreHeap<Character>();
-        heap.add('A', 50);
-        heap.add('B', 30);
-        heap.add('C', 40);
-        heap.add('D', 20);
-        heap.add('E', 10);
+        heap.set('A', 50);
+        heap.set('B', 30);
+        heap.set('C', 40);
+        heap.set('D', 20);
+        heap.set('E', 10);
 
         assertEquals('E', heap.poll().value());
         assertEquals('D', heap.poll().value());
@@ -86,8 +86,8 @@ class ScoreHeapTest {
     @Test
     void testNegativeScores() {
         var heap = new ScoreHeap<String>();
-        heap.add("Low", -10);
-        heap.add("High", -1);
+        heap.set("Low", -10);
+        heap.set("High", -1);
 
         assertEquals("Low", heap.poll().value());
         assertEquals("High", heap.poll().value());
@@ -97,7 +97,7 @@ class ScoreHeapTest {
     @Test
     void testSingleElement() {
         var heap = new ScoreHeap<String>();
-        heap.add("Solo", 100);
+        heap.set("Solo", 100);
         assertEquals("Solo", heap.poll().value());
         assertTrue(heap.isEmpty());
     }
@@ -105,9 +105,9 @@ class ScoreHeapTest {
     @Test
     void testRemove() {
         var heap = new ScoreHeap<String>();
-        heap.add("A", 3);
-        heap.add("B", 1);
-        heap.add("C", 2);
+        heap.set("A", 3);
+        heap.set("B", 1);
+        heap.set("C", 2);
 
         assertTrue(heap.remove("B"));
         assertFalse(heap.remove("B"));
@@ -120,9 +120,9 @@ class ScoreHeapTest {
     @Test
     void testSet() {
         var heap = new ScoreHeap<String>();
-        heap.add("A", 3);
-        heap.add("B", 1);
-        heap.add("C", 2);
+        heap.set("A", 3);
+        heap.set("B", 1);
+        heap.set("C", 2);
 
         heap.set("B", 4);
         heap.set("C", 0);

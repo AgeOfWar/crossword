@@ -14,6 +14,14 @@ public class Trie {
         children = new Trie[alphabetSize];
     }
 
+    public Trie getChild(byte letter) {
+        return children[letter];
+    }
+
+    public boolean isEndOfWord() {
+        return endOfWord;
+    }
+
     public boolean insert(byte... word) {
         Trie current = this;
         for (byte letter : word) {

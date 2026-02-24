@@ -224,6 +224,21 @@ public class Crossword {
         }
     }
 
+    public List<PositionDirectionLength> getIntersectingPositions(PositionDirectionLength pos) {
+        var positions = new ArrayList<PositionDirectionLength>();
+        for (var i = 0; i < pos.length(); i++) {
+            var position = switch (pos.direction()) {
+                case ACROSS -> new Position(pos.position().x() + i, pos.position().y());
+                case DOWN -> new Position(pos.position().x(), pos.position().y() + i);
+            };
+            var intersectingPosition = getPosition(position, pos.direction().opposite());
+            if (intersectingPosition.length() > 1) {
+                positions.add(intersectingPosition);
+            }
+        }
+        return positions;
+    }
+
     public List<PositionDirectionLength> setAndGetAffected(PositionDirectionLength pos, byte[] pattern, int minLength) {
         var affected = new ArrayList<PositionDirectionLength>();
         var oppositeDirection = pos.direction().opposite();
@@ -241,39 +256,16 @@ public class Crossword {
         return affected;
     }
 
-    public boolean fill(Dictionary dictionary) {
-        return fill(dictionary, new Random());
-    }
-
-    public boolean fill(Dictionary dictionary, Random random) {
-        var fillPositions = getPositions(2);
-        var heap = new ScoreHeap<PositionDirectionLength>(fillPositions.size());
-        fillPositions.sort(Comparator.comparingInt((pos) -> dictionary.fromPatternCount(get(pos))));
-        for (var position : fillPositions) {
-            heap.add(position, Integer.MAX_VALUE);
-        }
-        return fill(dictionary, random, heap);
-    }
-
-    private boolean fill(Dictionary dictionary, Random random, ScoreHeap<PositionDirectionLength> parentHeap) {
-        var heap = parentHeap.copy();
-        var position = heap.poll();
-        if (position == null) return true;
-        if (position.score() == 0) return false;
-        var pattern = get(position.value());
-        var words = dictionary.fromPattern(pattern);
-        if (words.isEmpty()) return false;
-        var randomWords = RandomIterator.randomStartIterator(words, random);
-        while (randomWords.hasNext()) {
-            var affectedPositions = setAndGetAffected(position.value(), randomWords.next(), 2);
-            for (var affected : affectedPositions) {
-                var score = dictionary.fromPatternCount(get(affected));
-                heap.set(affected, score);
+    public List<Position> emptyCells() {
+        var positions = new ArrayList<Position>();
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                if (grid[y][x] == EMPTY) {
+                    positions.add(new Position(x, y));
+                }
             }
-            if (fill(dictionary, random, heap)) return true;
         }
-        set(position.value(), pattern);
-        return false;
+        return positions;
     }
 
     public int width() {
@@ -296,7 +288,7 @@ public class Crossword {
         return stringBuilder.toString();
     }
 
-    protected Crossword copy() {
+    public Crossword copy() {
         return new Crossword(Arrays.stream(grid).map(byte[]::clone).toArray(byte[][]::new));
     }
 
@@ -312,6 +304,13 @@ public class Crossword {
             };
         }
     }
-    public record PositionDirectionLength(Position position, Direction direction, int length) {}
+    public record PositionDirectionLength(Position position, Direction direction, int length) {
+        public Position getPosition(int offset) {
+            return switch (direction) {
+                case ACROSS -> new Position(position.x() + offset, position.y());
+                case DOWN -> new Position(position.x(), position.y() + offset);
+            };
+        }
+    }
     public record PositionLength(Position position, int length) {}
 }

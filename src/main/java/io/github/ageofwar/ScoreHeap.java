@@ -20,8 +20,29 @@ public class ScoreHeap<T> {
         this(10);
     }
 
+    public double getScore(T value) {
+        var index = indexMap.get(value);
+        if (index == null) return Double.NaN;
+        return values[index].score;
+    }
+
+    public void set(T value, double score) {
+        var index = indexMap.get(value);
+        if (index == null) {
+            add(value, score);
+        } else {
+            var oldScore = values[index].score;
+            values[index].score = score;
+            if (score < oldScore) {
+                heapifyUp(index);
+            } else if (score > oldScore) {
+                heapifyDown(index);
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    public void add(T value, int score) {
+    private void add(T value, double score) {
         if (size >= values.length) {
             var newValues = new Entry[values.length * 2];
             System.arraycopy(values, 0, newValues, 0, values.length);
@@ -33,24 +54,10 @@ public class ScoreHeap<T> {
         heapifyUp(size - 1);
     }
 
-    public void set(T value, int score) {
-        var index = indexMap.get(value);
-        if (index == null) {
-            add(value, score);
-        } else {
-            var oldValue = values[index];
-            values[index] = new Entry<>(score, value);
-            if (score < oldValue.score) {
-                heapifyUp(index);
-            } else if (score > oldValue.score) {
-                heapifyDown(index);
-            }
-        }
-    }
-
     public Entry<T> poll() {
         if (size == 0) return null;
         var value = values[0];
+        indexMap.remove(value.value);
         size--;
         if (size > 0) {
             var movedValue = values[size];
@@ -60,24 +67,6 @@ public class ScoreHeap<T> {
         }
         values[size] = null;
         return value;
-    }
-
-    public boolean remove(T value) {
-        var index = indexMap.remove(value);
-        if (index == null) return false;
-        size--;
-        if (size == index) {
-            values[size] = null;
-            return true;
-        }
-        var movedValue = values[size];
-        values[index] = movedValue;
-        indexMap.put(movedValue.value, index);
-        if (movedValue.score < values[index].score) {
-            heapifyDown(index);
-        }
-        values[size] = null;
-        return true;
     }
 
     public boolean isEmpty() {
@@ -134,5 +123,21 @@ public class ScoreHeap<T> {
         indexMap.put(values[j].value, j);
     }
 
-    public record Entry<T>(int score, T value) {}
+    public static class Entry<E> {
+        private double score;
+        private E value;
+
+        public Entry(double score, E value) {
+            this.score = score;
+            this.value = value;
+        }
+
+        public double score() {
+            return score;
+        }
+
+        public E value() {
+            return value;
+        }
+    }
 }

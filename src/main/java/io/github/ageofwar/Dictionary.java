@@ -37,6 +37,10 @@ public class Dictionary {
         }
     }
 
+    public Trie getTrie() {
+        return trie;
+    }
+
     public List<byte[]> fromPattern(byte[] pattern) {
         return trie.fromPattern(pattern);
     }
