@@ -13,8 +13,8 @@ class CrosswordTest {
         assertEquals(3, crossword.width());
         assertEquals(3, crossword.height());
 
-        assertEquals(Crossword.EMPTY, crossword.get(new Crossword.Position(0, 0)));
-        assertEquals(Crossword.BLACK, crossword.get(new Crossword.Position(2, 0)));
-        assertEquals(Crossword.EMPTY, crossword.get(new Crossword.Position(1, 2)));
+        assertEquals(Crossword.EMPTY, crossword.get(new Position(0, 0)));
+        assertEquals(Crossword.BLACK, crossword.get(new Position(2, 0)));
+        assertEquals(Crossword.EMPTY, crossword.get(new Position(1, 2)));
     }
 }

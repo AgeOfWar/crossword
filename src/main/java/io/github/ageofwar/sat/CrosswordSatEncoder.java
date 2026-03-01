@@ -2,7 +2,8 @@ package io.github.ageofwar.sat;
 
 import io.github.ageofwar.Crossword;
 import io.github.ageofwar.Dictionary;
-import io.github.ageofwar.Trie;
+import io.github.ageofwar.Position;
+import io.github.ageofwar.PositionDirectionLength;
 
 import java.util.*;
 
@@ -15,7 +16,7 @@ public class CrosswordSatEncoder {
 
     public Output encode(Crossword crossword) {
         var builder = new SatBuilder();
-        var variables = new HashMap<Crossword.Position, int[]>();
+        var variables = new HashMap<Position, int[]>();
         var outputVariables = new HashMap<Integer, PositionLetter>();
 
         var positions = crossword.getPositions(2);
@@ -30,7 +31,7 @@ public class CrosswordSatEncoder {
         return new Output(builder.build(), outputVariables);
     }
 
-    private int[] encode(Crossword crossword, Crossword.Position position, SatBuilder builder, Map<Integer, PositionLetter> variables) {
+    private int[] encode(Crossword crossword, Position position, SatBuilder builder, Map<Integer, PositionLetter> variables) {
         var pattern = crossword.get(position);
         if (pattern == Crossword.BLACK) return null;
         // TODO handle already filled cells
@@ -45,7 +46,7 @@ public class CrosswordSatEncoder {
         return oneCharInCell;
     }
 
-    private void encode(Crossword crossword, Crossword.PositionDirectionLength position, SatBuilder builder, Map<Crossword.Position, int[]> variables) {
+    private void encode(Crossword crossword, PositionDirectionLength position, SatBuilder builder, Map<Position, int[]> variables) {
         var pattern = crossword.get(position);
         var candidates = dictionary.fromPattern(pattern);
         var oneCandidateInSlot = new int[candidates.size()];
@@ -74,7 +75,7 @@ public class CrosswordSatEncoder {
         }
     }
 
-    private int encode(Crossword crossword, Crossword.PositionDirectionLength position, SatBuilder builder, byte[] candidate, Map<Crossword.Position, int[]> variables) {
+    private int encode(Crossword crossword, PositionDirectionLength position, SatBuilder builder, byte[] candidate, Map<Position, int[]> variables) {
         var slotIsCandidate = builder.newVar();
         for (int i = 0; i < candidate.length; i++) {
             var cellPosition = position.getPosition(i);
@@ -88,6 +89,6 @@ public class CrosswordSatEncoder {
     public record Output(Sat sat, Map<Integer, CrosswordSatEncoder.PositionLetter> variables) {
     }
 
-    public record PositionLetter(Crossword.Position position, byte letter) {
+    public record PositionLetter(Position position, byte letter) {
     }
 }

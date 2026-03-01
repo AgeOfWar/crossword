@@ -1,6 +1,7 @@
 package io.github.ageofwar;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 public class Trie {
@@ -87,6 +88,29 @@ public class Trie {
             return children[letter].fromPatternCount(pattern, depth + 1);
         } else {
             return 0;
+        }
+    }
+
+    public List<byte[]> fromPattern(BitSet[] pattern) {
+        var result = new ArrayList<byte[]>();
+        fromPattern(pattern, new byte[pattern.length], 0, result);
+        return result;
+    }
+
+    private void fromPattern(BitSet[] pattern, byte[] currentWord, int depth, List<byte[]> result) {
+        if (depth == pattern.length) {
+            if (endOfWord) {
+                result.add(currentWord.clone());
+            }
+            return;
+        }
+
+        var letters = pattern[depth];
+        for (byte i = 0; i < children.length; i++) {
+            if (letters.get(i) && children[i] != null) {
+                currentWord[depth] = i;
+                children[i].fromPattern(pattern, currentWord, depth + 1, result);
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 package io.github.ageofwar;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Random;
 
 public class NaiveCrosswordFiller implements CrosswordFiller {
@@ -21,7 +20,7 @@ public class NaiveCrosswordFiller implements CrosswordFiller {
     public Crossword fill(Crossword crossword) {
         var clone = crossword.copy();
         var fillPositions = crossword.getPositions(2);
-        var heap = new ScoreHeap<Crossword.PositionDirectionLength>(fillPositions.size());
+        var heap = new ScoreHeap<PositionDirectionLength>(fillPositions.size());
         for (var position : fillPositions) {
             heap.set(position, dictionary.fromPatternCount(crossword.get(position)));
         }
@@ -31,7 +30,8 @@ public class NaiveCrosswordFiller implements CrosswordFiller {
         return null;
     }
 
-    private boolean fill(Crossword crossword, ScoreHeap<Crossword.PositionDirectionLength> heap) {
+    private boolean fill(Crossword crossword, ScoreHeap<PositionDirectionLength> heap) {
+        System.out.println(crossword);
         var position = heap.poll();
         if (position == null) return true;
         if (position.score() == 0) {
@@ -44,10 +44,10 @@ public class NaiveCrosswordFiller implements CrosswordFiller {
         var randomWords = RandomIterator.randomStartIterator(words, random);
         while (randomWords.hasNext()) {
             var affectedPositions = crossword.setAndGetAffected(position.value(), randomWords.next(), 2);
-            var oldEntries = new ArrayList<ScoreHeap.Entry<Crossword.PositionDirectionLength>>(affectedPositions.size());
+            var oldEntries = new ArrayList<ScoreHeap.Entry<PositionDirectionLength>>(affectedPositions.size());
             for (var affected : affectedPositions) {
                 oldEntries.add(new ScoreHeap.Entry<>(heap.getScore(affected), affected));
-                var score = dictionary.fromPatternCount(crossword.get(affected));
+                var score = (double) dictionary.fromPatternCount(crossword.get(affected));
                 heap.set(affected, score);
             }
             if (fill(crossword, heap)) return true;

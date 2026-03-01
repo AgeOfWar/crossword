@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 public class Dictionary {
@@ -42,6 +43,10 @@ public class Dictionary {
     }
 
     public List<byte[]> fromPattern(byte[] pattern) {
+        return trie.fromPattern(pattern);
+    }
+
+    public List<byte[]> fromPattern(BitSet[] pattern) {
         return trie.fromPattern(pattern);
     }
 

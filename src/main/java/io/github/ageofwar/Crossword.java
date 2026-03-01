@@ -59,15 +59,15 @@ public class Crossword {
         return array;
     }
 
-    private Crossword(byte[][] grid) {
+    Crossword(byte[][] grid) {
         this.grid = grid;
         width = grid[0].length;
         height = grid.length;
     }
 
     public byte[] getAcross(Position pos) {
-        var x = pos.x;
-        var y = pos.y;
+        var x = pos.x();
+        var y = pos.y();
         while (x > 0 && grid[y][x - 1] != BLACK) {
             x--;
         }
@@ -81,8 +81,8 @@ public class Crossword {
     }
 
     public byte[] getDown(Position pos) {
-        var x = pos.x;
-        var y = pos.y;
+        var x = pos.x();
+        var y = pos.y();
         while (y > 0 && grid[y - 1][x] != BLACK) {
             y--;
         }
@@ -117,8 +117,8 @@ public class Crossword {
     }
 
     public void setAcross(Position pos, byte[] pattern) {
-        var x = pos.x;
-        var y = pos.y;
+        var x = pos.x();
+        var y = pos.y();
         while (x > 0 && grid[y][x - 1] != BLACK) {
             x--;
         }
@@ -126,8 +126,8 @@ public class Crossword {
     }
 
     public void setDown(Position pos, byte[] pattern) {
-        var x = pos.x;
-        var y = pos.y;
+        var x = pos.x();
+        var y = pos.y();
         while (y > 0 && grid[y - 1][x] != BLACK) {
             y--;
         }
@@ -202,41 +202,26 @@ public class Crossword {
 
     public PositionDirectionLength getPosition(Position position, Direction direction) {
         if (direction == Direction.ACROSS) {
-            var start = position.x;
-            while (start > 0 && grid[position.y][start - 1] != BLACK) {
+            var start = position.x();
+            while (start > 0 && grid[position.y()][start - 1] != BLACK) {
                 start--;
             }
-            var end = position.x;
-            while (end < width && grid[position.y][end] != BLACK) {
+            var end = position.x();
+            while (end < width && grid[position.y()][end] != BLACK) {
                 end++;
             }
-            return new PositionDirectionLength(new Position(start, position.y), direction, end - start);
+            return new PositionDirectionLength(new Position(start, position.y()), direction, end - start);
         } else {
-            var start = position.y;
-            while (start > 0 && grid[start - 1][position.x] != BLACK) {
+            var start = position.y();
+            while (start > 0 && grid[start - 1][position.x()] != BLACK) {
                 start--;
             }
-            var end = position.y;
-            while (end < height && grid[end][position.x] != BLACK) {
+            var end = position.y();
+            while (end < height && grid[end][position.x()] != BLACK) {
                 end++;
             }
-            return new PositionDirectionLength(new Position(position.x, start), direction, end - start);
+            return new PositionDirectionLength(new Position(position.x(), start), direction, end - start);
         }
-    }
-
-    public List<PositionDirectionLength> getIntersectingPositions(PositionDirectionLength pos) {
-        var positions = new ArrayList<PositionDirectionLength>();
-        for (var i = 0; i < pos.length(); i++) {
-            var position = switch (pos.direction()) {
-                case ACROSS -> new Position(pos.position().x() + i, pos.position().y());
-                case DOWN -> new Position(pos.position().x(), pos.position().y() + i);
-            };
-            var intersectingPosition = getPosition(position, pos.direction().opposite());
-            if (intersectingPosition.length() > 1) {
-                positions.add(intersectingPosition);
-            }
-        }
-        return positions;
     }
 
     public List<PositionDirectionLength> setAndGetAffected(PositionDirectionLength pos, byte[] pattern, int minLength) {
@@ -291,26 +276,4 @@ public class Crossword {
     public Crossword copy() {
         return new Crossword(Arrays.stream(grid).map(byte[]::clone).toArray(byte[][]::new));
     }
-
-    public record Position(int x, int y) {}
-    public enum Direction {
-        ACROSS,
-        DOWN;
-
-        public Direction opposite() {
-            return switch (this) {
-                case ACROSS -> DOWN;
-                case DOWN -> ACROSS;
-            };
-        }
-    }
-    public record PositionDirectionLength(Position position, Direction direction, int length) {
-        public Position getPosition(int offset) {
-            return switch (direction) {
-                case ACROSS -> new Position(position.x() + offset, position.y());
-                case DOWN -> new Position(position.x(), position.y() + offset);
-            };
-        }
-    }
-    public record PositionLength(Position position, int length) {}
 }

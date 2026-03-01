@@ -32,7 +32,7 @@ public class ScoreHeap<T> {
             add(value, score);
         } else {
             var oldScore = values[index].score;
-            values[index].score = score;
+            values[index] = new Entry<>(score, value);
             if (score < oldScore) {
                 heapifyUp(index);
             } else if (score > oldScore) {
@@ -123,21 +123,6 @@ public class ScoreHeap<T> {
         indexMap.put(values[j].value, j);
     }
 
-    public static class Entry<E> {
-        private double score;
-        private E value;
-
-        public Entry(double score, E value) {
-            this.score = score;
-            this.value = value;
-        }
-
-        public double score() {
-            return score;
-        }
-
-        public E value() {
-            return value;
-        }
+    public record Entry<E>(double score, E value) {
     }
 }
