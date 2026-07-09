@@ -31,7 +31,7 @@ public class CspCrosswordFiller implements CrosswordFiller {
         var constraints = new ArrayList<Csp.BinaryConstraint<byte[]>>();
         for (int i = 0; i < positions.size(); i++) {
             var position = positions.get(i);
-            var domain = dictionary.wordsByLength(position.length());
+            var domain = dictionary.fromPattern(crossword.get(position));
             Collections.shuffle(domain, random);
             domains.add(domain.toArray(new byte[0][]));
             for (var intersection : crossword.getIntersections(position)) {

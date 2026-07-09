@@ -1,5 +1,8 @@
 package io.github.ageofwar;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.*;
 
 public class Crossword {
@@ -9,6 +12,14 @@ public class Crossword {
     private final int width;
     private final int height;
     private final byte[][] grid;
+
+    public static Crossword fromFile(String filename) {
+        try {
+            return Crossword.fromString(Files.readString(java.nio.file.Path.of(filename)));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     public static Crossword fromString(String string) {
         string = string.trim();

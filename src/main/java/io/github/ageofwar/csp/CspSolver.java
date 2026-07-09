@@ -26,7 +26,7 @@ public class CspSolver<T> {
                 .toList();
         if (unassigned.isEmpty()) return assignments;
 
-        var variable = selectVariable(unassigned);
+        var variable = selectVariable(unassigned, binaryConstraints);
         for (var candidate : variable.domain()) {
             assignments.set(variable.name(), candidate);
             for (var v : unassigned) v.domain().checkpoint();
@@ -54,7 +54,7 @@ public class CspSolver<T> {
             if (assignments.get(constraint.right()) != null) continue;
             var rightDomain = variables.get(constraint.right()).domain();
             if (rightDomain.removeIf(candidate -> !constraint.constraint().test(assignments.get(variable), candidate))) {
-                if (rightDomain.size() == 0) return false;
+                if (rightDomain.isEmpty()) return false;
                 for (var binaryConstraint : binaryConstraints.get(constraint.right())) {
                     if (binaryConstraint.right() == constraint.left()) continue;
                     queue.add(binaryConstraint);
@@ -70,7 +70,7 @@ public class CspSolver<T> {
             var rightDomainSizeBefore = rightDomain.size();
             constraint.constraint().test(leftDomain, rightDomain);
             if (rightDomain.size() < rightDomainSizeBefore) {
-                if (rightDomain.size() == 0) return false;
+                if (rightDomain.isEmpty()) return false;
                 for (var binaryConstraint : binaryConstraints.get(constraint.right())) {
                     if (binaryConstraint.right() == constraint.left()) continue;
                     queue.add(binaryConstraint);
@@ -81,8 +81,8 @@ public class CspSolver<T> {
         return true;
     }
 
-    private Variable<T> selectVariable(Collection<Variable<T>> variables) {
-        return Collections.min(variables, Comparator.comparingInt(v -> v.domain().size()));
+    private Variable<T> selectVariable(Collection<Variable<T>> variables, List<List<Csp.BinaryConstraint<T>>> binaryConstraints) {
+        return Collections.min(variables, Comparator.comparingDouble(v -> (double) v.domain().size() / binaryConstraints.get(v.name()).size()));
     }
 
     private record Variable<T>(int name, Domain<T> domain) {

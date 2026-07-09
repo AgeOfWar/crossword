@@ -58,10 +58,4 @@ public class Dictionary {
     public int wordCountByLength(int length) {
         return length < wordCountByLength.size() ? wordCountByLength.get(length) : 0;
     }
-
-    public List<byte[]> wordsByLength(int length) {
-        var pattern = new byte[length];
-        Arrays.fill(pattern, Crossword.EMPTY);
-        return trie.fromPattern(pattern);
-    }
 }

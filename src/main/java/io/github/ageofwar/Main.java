@@ -8,45 +8,11 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) throws IOException {
         var dictionary = Dictionary.fromFile("words.italian.txt");
+        var crossword = Crossword.fromFile("scheme3.txt");
         var seed = System.currentTimeMillis();//-74039664346287448L;
         System.out.println("Seed: " + seed);
         var random = new Random(seed);
         var crosswordFiller = new CspCrosswordFiller(dictionary, random);
-
-        var crossword = Crossword.fromString("""
-                    .........########
-                    ....#....########
-                    ...#.....########
-                    ..#......########
-                    .#......#########
-                    #......#.########
-                    ......#..########
-                    .....#...########
-                    ....#....########
-                    ...#.....########
-                    ..#..............
-                    .#......#......#.
-                    .......#......#..
-                    ......#......#...
-                    .....#......#....
-                    ....#......#.....
-                    ...#......#......
-                """);
-
-        //var crossword = Crossword.fromString("""
-        //            ..........###.#.......
-        //            ......#....#..........
-        //            ...##..##........#...#
-        //            ..#......#......#.....
-        //            ..#...............#...
-        //            .#.............##.....
-        //            #...................#.
-        //            .................#....
-        //            .#.....#....#........#
-        //            ...#...#...#.##.......
-        //            .....#..#.#..........#
-        //            ....#..........##.#...
-        //        """);
         System.out.println(crossword);
         var start = System.nanoTime();
         var filled = crosswordFiller.fill(crossword);
