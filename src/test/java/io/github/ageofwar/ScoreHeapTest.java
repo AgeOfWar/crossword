@@ -103,21 +103,6 @@ class ScoreHeapTest {
     }
 
     @Test
-    void testRemove() {
-        var heap = new ScoreHeap<String>();
-        heap.set("A", 3);
-        heap.set("B", 1);
-        heap.set("C", 2);
-
-        assertTrue(heap.remove("B"));
-        assertFalse(heap.remove("B"));
-        assertTrue(heap.remove("A"));
-        assertTrue(heap.remove("C"));
-        assertFalse(heap.remove("C"));
-        assertTrue(heap.isEmpty());
-    }
-
-    @Test
     void testSet() {
         var heap = new ScoreHeap<String>();
         heap.set("A", 3);

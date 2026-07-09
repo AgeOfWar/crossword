@@ -241,6 +241,20 @@ public class Crossword {
         return affected;
     }
 
+    public List<PositionDirectionLength> getIntersections(PositionDirectionLength position) {
+        var intersections = new ArrayList<PositionDirectionLength>();
+        var oppositeDirection = position.direction().opposite();
+        for (var i = 0; i < position.length(); i++) {
+            var pos = switch (position.direction()) {
+                case ACROSS -> new Position(position.position().x() + i, position.position().y());
+                case DOWN -> new Position(position.position().x(), position.position().y() + i);
+            };
+            var intersection = getPosition(pos, oppositeDirection);
+            if (intersection.length() >= 2) intersections.add(intersection);
+        }
+        return intersections;
+    }
+
     public List<Position> emptyCells() {
         var positions = new ArrayList<Position>();
         for (var y = 0; y < height; y++) {

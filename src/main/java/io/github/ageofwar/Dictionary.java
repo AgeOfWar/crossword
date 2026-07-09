@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
@@ -56,5 +57,11 @@ public class Dictionary {
 
     public int wordCountByLength(int length) {
         return length < wordCountByLength.size() ? wordCountByLength.get(length) : 0;
+    }
+
+    public List<byte[]> wordsByLength(int length) {
+        var pattern = new byte[length];
+        Arrays.fill(pattern, Crossword.EMPTY);
+        return trie.fromPattern(pattern);
     }
 }

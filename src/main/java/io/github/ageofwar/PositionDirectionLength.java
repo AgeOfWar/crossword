@@ -1,5 +1,7 @@
 package io.github.ageofwar;
 
+import java.util.ArrayList;
+
 public record PositionDirectionLength(Position position, Direction direction, int length) {
     public Position getPosition(int offset) {
         return switch (direction) {
